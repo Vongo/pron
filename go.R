@@ -7,20 +7,14 @@ spleat <- function(x) {
 	trunk
 }
 
-count.of.key.for.year <- function(k,y) {
-	beg <- as.Date(paste("01/01/",y,sep=""),format="%m/%d/%Y")
-	end <- as.Date(paste("01/01/",y+1,sep=""),format="%m/%d/%Y")
-	sub <- data[data$upload_date<end & data$upload_date>beg,]
+count.of.key <- function(k) {
 	cpt <- 0
 	lol <- sapply(sub$channels,function(x){if(grepl(k,x))cpt<<-cpt+1})
 	cpt
 }
 
-count.views.of.key.for.year <- function(k,y) {
-	beg <- as.Date(paste("01/01/",y,sep=""),format="%m/%d/%Y")
-	end <- as.Date(paste("01/01/",y+1,sep=""),format="%m/%d/%Y")
-	sub <- data[data$upload_date<end & data$upload_date>beg,]
-	count = 0
+count.views.of.key <- function(k) {
+	count <- 0
 	for (i in 1:nrow(sub)) {
 		r <- sub[i,]
 		if(grepl(k,r$channels)){
@@ -33,7 +27,7 @@ count.views.of.key.for.year <- function(k,y) {
 data <- read.csv("./xhamster.csv", sep = ",", header = T, stringsAsFactors = F)
 
 data$upload_date <- as.Date(data$upload_date,format="%Y-%m-%d")
-# data$upload_year <- as.POSIXlt(strptime(data$upload_date,format='%m/%d/%Y'))$mday
+# data$upload_year <- as.POSIXlt(strptime(data$upload_date,format='%m/%d/%Y'))$year
 
 groups <- sapply(data$channels,spleat)
 keys <- unlist(groups)
@@ -58,24 +52,24 @@ for (group in groups) {
 	}
 }
 
+nbviews <- data.frame(matrix(vector(), 0, 8, dimnames=list(c(), c("Key","2007","2008","2009","2010","2011","2012","2013"))), stringsAsFactors=F)
 times <- data.frame(matrix(vector(), 0, 8, dimnames=list(c(), c("Key","2007","2008","2009","2010","2011","2012","2013"))), stringsAsFactors=F)
+pb <- txtProgressBar(1,length(keys),1,style=3)
 for (k in 1:length(keys)) {
 	key <- keys[k]
 	counts <- c()
-	for (year in 2007:2013) {
-		counts <- c(counts,count.of.key.for.year(key,year))
+	views <- c()
+	for (y in 2007:2013) {
+		beg <- as.Date(paste("01/01/",y,sep=""),format="%m/%d/%Y")
+		end <- as.Date(paste("01/01/",y+1,sep=""),format="%m/%d/%Y")
+		sub <- data[data$upload_date<end & data$upload_date>beg,]
+
+		counts <- c(counts,count.of.key(key))
+		views <- c(views,count.views.of.key(key))
 	}
 	times[k,] <- c(key,counts)
+	nbviews[k,] <- c(key,views)
+	setTxtProgressBar(pb,k)
 }
-
-nbviews <- data.frame(matrix(vector(), 0, 8, dimnames=list(c(), c("Key","2007","2008","2009","2010","2011","2012","2013"))), stringsAsFactors=F)
-for (k in 1:length(keys)) {
-	key <- keys[k]
-	counts <- c()
-	for (year in 2007:2013) {
-		counts <- c(counts,count.views.of.key.for.year(key,year))
-	}
-	nbviews[k,] <- c(key,counts)
-}
-
+close(pb)
 sucksess <- nbviews / times
