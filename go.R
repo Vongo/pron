@@ -77,3 +77,5 @@ for (k in 1:length(keys)) {
 	}
 	nbviews[k,] <- c(key,counts)
 }
+
+sucksess <- nbviews / times
