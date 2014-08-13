@@ -67,4 +67,20 @@ for (k in 1:length(keys)) {
 	setTxtProgressBar(pb,k)
 }
 close(pb)
-sucksess <- nbviews / times
+
+names <- times[,1]
+nbviews <- nbviews[,2:8]
+times <- times[,2:8]
+rownames(nbviews) <- names
+rownames(times) <- names
+
+sucksess <- data.frame(matrix(vector(), nrow(times), 7, dimnames=list(c(), c("2007","2008","2009","2010","2011","2012","2013"))), stringsAsFactors=F)
+rownames(sucksess) <- names
+for (nr in 1:nrow(times)) {
+	for (nc in 1:ncol(times)) {
+		sucksess[nr,nc] <- as.numeric(nbviews[nr,nc]) / as.numeric(times[nr,nc])
+	}
+}
+
+plot.success <- function(x) qplot(x=colnames(sucksess),y=sucksess[x,],stat="identity",geom="histogram",ylab = "Views per video", xlab = "Year", main = "Evolution of popularity over time")
+
