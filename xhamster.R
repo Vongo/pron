@@ -84,3 +84,7 @@ for (nr in 1:nrow(times)) {
 
 plot.success <- function(x) qplot(x=colnames(sucksess),y=sucksess[x,],stat="identity",geom="histogram",ylab = "Views per video", xlab = "Year", main = "Evolution of popularity over time")
 
+write.table(amtx,"cooccurrences.csv",
+		append = FALSE, quote = TRUE, sep = ";",
+		eol = "\n", na = "NA", dec = ".", row.names = TRUE,
+		col.names = TRUE, qmethod = c("escape", "double"))
