@@ -30,7 +30,7 @@ names(keys) <- c()
 keys <- unique(keys)
 
 n <- length(keys)
-amtx <- matrix(rep(0,n*n),nrow=n,ncol=n,dimnames=list(keys,keys))
+amtx <- matrix(data=0,nrow=n,ncol=n,dimnames=list(keys,keys))
 
 for (group in groups) {
 	sequ <- 1:length(group)
@@ -38,7 +38,7 @@ for (group in groups) {
 		term <- group[i]
 		if (length(term)>0)
 			if (!is.na(term))
-				for (o in sequ[which(sequ!=i)]) {
+				for (o in sequ[which(sequ>i)]) {
 					other <- group[o]
 					if (length(other)>0)
 						if (!is.na(other))
