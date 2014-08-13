@@ -9,18 +9,13 @@ spleat <- function(x) {
 
 count.of.key <- function(k) {
 	cpt <- 0
-	lol <- sapply(sub$channels,function(x){if(grepl(k,x))cpt<<-cpt+1})
+	sapply(sub$channels,function(x){if(grepl(k,x))cpt<<-cpt+1})
 	cpt
 }
 
 count.views.of.key <- function(k) {
 	count <- 0
-	for (i in 1:nrow(sub)) {
-		r <- sub[i,]
-		if(grepl(k,r$channels)){
-			count <- count + r$nb_views
-		}
-	}
+	apply(sub,1,function(x) {if(grepl(k,x["channels"]))count<<-count+as.numeric(x["nb_views"])})
 	count
 }
 
