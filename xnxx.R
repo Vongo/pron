@@ -27,7 +27,12 @@ names(keys) <- c()
 keys <- unique(keys)
 
 n <- length(keys)
-amtx <- matrix(0,nrow=n,ncol=n,dimnames=list(keys,keys))
+# amtx <- matrix(0,nrow=n,ncol=n,dimnames=list(keys,keys))
+amtx <- matrix(0,nrow=n,ncol=n)
+colnames(amtx) <- keys
+rownames(amtx) <- keys
+
+
 
 for (group in groups) {
 	sequ <- 1:length(group)
