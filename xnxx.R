@@ -24,20 +24,24 @@ data <- read.csv("./xnxx.csv", sep = ",", header = T, stringsAsFactors = F)
 groups <- sapply(data$tags,spleat)
 keys <- unlist(groups)
 names(keys) <- c()
+uKeys <- unique(keys)
 
-occurrences <- data.frame(matrix(vector(), 0, 2, dimnames=list(c(), c("Key","Count"))), stringsAsFactors=F)
-io <- 1
-pb <- txtProgressBar(1,length(unique(keys)),1,style=3)
-for (k in unique(keys)) {
-	occurrences[io,] <- c(k,sum(grepl(k,keys))) # Here
-	setTxtProgressBar(pb,io)
-	io <- io + 1
-}
-close(pb)
+# occurrences <- data.frame(matrix(vector(), 0, 2, dimnames=list(c(), c("Key","Count"))), stringsAsFactors=F)
+# io <- 1
+# pb <- txtProgressBar(1,length(unique(keys)),1,style=3)
+# for (k in unique(keys)) {
+# 	occurrences[io,] <- c(k,sum(grepl(k,keys))) # Here
+# 	setTxtProgressBar(pb,io)
+# 	io <- io + 1
+# }
+# close(pb)
+
+fac <- factor(keys,levels=uKeys)
+occurrences <- as.data.frame(summary(fac))
+colnames(occurrences) <- c("Key","Count")
 occurrences <- occurrences[order(occurrences$Count),]
 top <- occurrences[1:10000,]
 
-uKeys <- unique(keys)
 
 n <- nrow(top)
 # amtx <- matrix(0,nrow=n,ncol=n,dimnames=list(keys,keys))
