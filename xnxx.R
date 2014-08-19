@@ -37,11 +37,12 @@ uKeys <- unique(keys)
 # close(pb)
 
 fac <- factor(keys,levels=uKeys)
-occurrences <- as.data.frame(summary(fac))
-colnames(occurrences) <- c("Key","Count")
+occ1 <- as.data.frame(summary(fac))
+occurrences <- data.frame(matrix(vector(), 100, 2, dimnames=list(c(), c("Key","Count"))), stringsAsFactors=F)
+occurrences$Key <- rownames(occ1)
+occurrences$Count <- occ1[,"summary(fac)"]
 occurrences <- occurrences[order(occurrences$Count),]
-top <- occurrences[1:10000,]
-
+top <- occurrences[1:99,]
 
 n <- nrow(top)
 # amtx <- matrix(0,nrow=n,ncol=n,dimnames=list(keys,keys))
@@ -63,8 +64,9 @@ for (group in groups) {
 						other <- group[o]
 						if (length(other)>0)
 							if (!is.na(other))
-								if (term %in% top$Key)
+								if (other %in% top$Key){
 									amtx[term,other] <- amtx[term,other]+1
+								}
 					}
 	}
 	ng <- ng + 1
